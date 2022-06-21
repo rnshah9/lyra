@@ -1,5 +1,5 @@
 project: lyra
-target: lyra
+target: encoder-main
 testsuite:
   - file://testdata/invalid.wav
 
