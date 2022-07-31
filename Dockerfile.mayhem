@@ -9,7 +9,6 @@ RUN mv bazel.gpg /etc/apt/trusted.gpg.d/
 RUN echo 'deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8' | tee /etc/apt/sources.list.d/bazel.list
 RUN apt update && apt install -y bazel-4.0.0
 
-
 COPY . /repo
 WORKDIR /repo
 RUN bazel-4.0.0 build -c opt :encoder_main
@@ -17,11 +16,5 @@ RUN bazel-4.0.0 build -c opt :encoder_main
 WORKDIR /repo
 RUN cp /repo/bazel-bin/encoder_main /repo
 
-RUN mkdir -p /deps
-RUN ldd /repo/encoder_main | tr -s '[:blank:]' '\n' | grep '^/' | xargs -I % sh -c 'cp % /deps;'
-
 FROM ubuntu:22.04 as package
-
-COPY --from=builder /deps /deps
-COPY --from=builder /repo/encoder_main /repo/encoder_main
-ENV LD_LIBRARY_PATH=/deps
+COPY --from=builder /repo/encoder_main /

@@ -4,6 +4,6 @@ testsuite:
   - file://testdata/invalid.wav
 
 cmds:
-  - cmd: /repo/encoder_main --input_path @@ --output_dir out
+  - cmd: /encoder_main --input_path @@ --output_dir out
     env:
       DISABLE_SMOKETEST: '1'
