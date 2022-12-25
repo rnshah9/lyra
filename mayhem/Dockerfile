@@ -1,7 +1,7 @@
 FROM --platform=linux/amd64 ubuntu:22.04 as builder
 
 RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential git
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential git clang
 
 RUN apt install -y apt-transport-https curl gnupg
 RUN curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor > bazel.gpg
@@ -9,12 +9,15 @@ RUN mv bazel.gpg /etc/apt/trusted.gpg.d/
 RUN echo 'deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8' | tee /etc/apt/sources.list.d/bazel.list
 RUN apt update && apt install -y bazel-4.0.0
 
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python-is-python3
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y python3-pip
+RUN pip install numpy
 COPY . /repo
 WORKDIR /repo
-RUN bazel-4.0.0 build -c opt :encoder_main
+# RUN bazel-4.0.0 build -c opt lyra/cli_example:encoder_main
 
-WORKDIR /repo
-RUN cp /repo/bazel-bin/encoder_main /repo
+# WORKDIR /repo
+# RUN cp /repo/bazel-bin/encoder_main /repo
 
-FROM ubuntu:22.04 as package
-COPY --from=builder /repo/encoder_main /
+# FROM ubuntu:22.04 as package
+# COPY --from=builder /repo/encoder_main /
